@@ -24,18 +24,19 @@ class CardReader:
     def on_connect(self, tag):
         logging.info("Touched card %s", tag)
         self.idm = binascii.hexlify(tag._nfcid)
+        idm_str = self.idm.decode('ascii')
 
-        if self.idm in self.idm_dict:
+        if idm_str in self.idm_dict:
             host = os.environ.get("SECRETARY_HOST")
             endpoint = os.environ.get("SECRETARY_ENDPOINT")
-            url = "http://" + host + "/" + endpoint
+            url = "http://" + str(host) + "/" + str(endpoint)
             headers = {"Content-Type": "application/json"}
-            body = {"name": self.idm_dict[self.idm]}
+            body = {"name": self.idm_dict[idm_str]}
             json_data = json.dumps(body).encode("utf-8")
             request = urllib.request.Request(url, data=json_data, method="POST", headers=headers)
             with urllib.request.urlopen(request) as response:
                 response_body = response.read().decode("utf-8")
-                logging.info(response_body)
+                logging.info('response body: %s', response_body)
         else:
             logging.info('unknown IDm %s', self.idm)
 
