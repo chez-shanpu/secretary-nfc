@@ -8,6 +8,7 @@
 ## Usage
 1. Setup environment
 ```shell
+$ cd {secretary-nfc_root_dir}
 $ pipenv install
 ```
 
@@ -23,7 +24,7 @@ SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=={{DEVICE_idVendor}}, ATTRS{idP
 
 3. Release device from kernel module
 ```shell
-sudo sh -c 'echo blacklist port100 >> /etc/modprobe.d/blacklist-nfc.conf'
+$ sudo sh -c 'echo blacklist port100 >> /etc/modprobe.d/blacklist-nfc.conf'
 ```
 
 4. Reboot
