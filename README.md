@@ -31,3 +31,11 @@ $ sudo sh -c 'echo blacklist port100 >> /etc/modprobe.d/blacklist-nfc.conf'
 ```shell
 $ sudo reboot
 ```
+
+5. Run secretary-nfc
+```shell
+$ docker run \
+  -v $PWD/config.yaml:/secretary-nfc/config.yaml \
+  --device /dev/bus/usb/{{BUS_NUM}}/{DEV_NUM} \
+  secretary-nfc
+```
