@@ -22,6 +22,8 @@ $ sudo vi /etc/udev/rules.d/nfcdev.rules
 SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=={{DEVICE_idVendor}}, ATTRS{idProduct}=={{DEVICE_idProduct}}, GROUP="plugdev"
 ```
 
+Also you can get messages by `pipenv run python3 -m nfc`
+
 3. Release device from kernel module
 ```shell
 $ sudo sh -c 'echo blacklist port100 >> /etc/modprobe.d/blacklist-nfc.conf'
@@ -30,4 +32,17 @@ $ sudo sh -c 'echo blacklist port100 >> /etc/modprobe.d/blacklist-nfc.conf'
 4. Reboot
 ```shell
 $ sudo reboot
+```
+
+5. Build docker image
+```shell
+$ docker image build . -t secretary-nfc
+```
+
+6. Run secretary-nfc
+```shell
+$ docker run \
+  -v $PWD/config.yaml:/secretary-nfc/config.yaml \
+  --device /dev/bus/usb/{{BUS_NUM}}/{DEV_NUM} \
+  secretary-nfc
 ```
