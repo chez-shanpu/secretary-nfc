@@ -27,13 +27,11 @@ class CardReader:
         idm_str = self.idm.decode('ascii')
 
         if idm_str in self.idm_dict:
-            host = os.environ.get("SECRETARY_HOST")
             endpoint = os.environ.get("SECRETARY_ENDPOINT")
-            url = "http://" + str(host) + "/" + str(endpoint)
             headers = {"Content-Type": "application/json"}
             body = {"name": self.idm_dict[idm_str]}
             json_data = json.dumps(body).encode("utf-8")
-            request = urllib.request.Request(url, data=json_data, method="POST", headers=headers)
+            request = urllib.request.Request(endpoint, data=json_data, method="POST", headers=headers)
             with urllib.request.urlopen(request) as response:
                 response_body = response.read().decode("utf-8")
                 logging.info('response body: %s', response_body)
