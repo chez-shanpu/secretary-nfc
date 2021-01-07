@@ -34,15 +34,41 @@ $ sudo sh -c 'echo blacklist port100 >> /etc/modprobe.d/blacklist-nfc.conf'
 $ sudo reboot
 ```
 
-5. Build docker image
+5. prepare config.yaml
+
 ```shell
-$ docker image build . -t secretary-nfc
+$ cp config.sample.yaml config.yaml
 ```
 
-6. Run secretary-nfc
+```yaml
+# config.yaml
+{{ nfc-card id }}: {{ username }}
+```
+
+You can check your nfc-card id by running secretary-nfc, touching the card, and checking the log.
+
+6. prepare .env
+```shell
+$ cp .env.sample .env
+```
+
+```
+SECRETARY_ENDPOINT=http://localhost/event
+```
+
+- `SECRETARY_ENDPOINT`: this is the endpoint of [secretary-lab](https://github.com/chez-shanpu/secretary)
+
+
+7. Build docker image
+```shell
+$ docker image build . -t secretary-nfc:latest
+```
+
+8. Run secretary-nfc
 ```shell
 $ docker run \
   -v $PWD/config.yaml:/secretary-nfc/config.yaml \
   --device /dev/bus/usb/{{BUS_NUM}}/{DEV_NUM} \
+  --env-file .env
   secretary-nfc
 ```
