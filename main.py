@@ -6,6 +6,7 @@ import yaml
 import urllib.request
 import os
 import json
+from playsound import playsound
 
 # logging
 formatter = '%(levelname)s : %(asctime)s : %(message)s'
@@ -13,7 +14,8 @@ logging.basicConfig(level=logging.DEBUG, format=formatter)
 
 
 class CardReader:
-    def __init__(self, yaml_path):
+    def __init__(self, yaml_path, se_path):
+        self.se_path = se_path
         try:
             with open(yaml_path) as file:
                 self.idm_dict = yaml.safe_load(file)
@@ -22,6 +24,7 @@ class CardReader:
             exit(1)
 
     def on_connect(self, tag):
+        playsound(self.se_path)
         logging.info("Touched card %s", tag)
         self.idm = binascii.hexlify(tag._nfcid)
         idm_str = self.idm.decode('ascii')
@@ -53,10 +56,13 @@ class CardReader:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--yaml', default="config.yaml", type=str, help="path to yaml config file")
+    parser.add_argument('-s', '--se-path', default="./materials/touch-se1.mp3", type=str,
+                        help="path to sound effect file")
     args = parser.parse_args()
 
     yaml_path = args.yaml
-    cr = CardReader(yaml_path)
+    se_path = args.se_path
+    cr = CardReader(yaml_path, se_path)
     while True:
         print("Please Touch")
         cr.read_id()
